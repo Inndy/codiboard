@@ -1,0 +1,17 @@
+[pager]
+item_per_page = 15
+
+; designed to be used with docker-compose
+[postgre]
+docker_network = codimd_default
+; if `docker_network` was set, assign container name to `host`
+host = codimd_database_1
+db = codimd
+user = codimd
+password = codimd_database_password
+
+[codimd]
+; url without trailing slash
+url = https://your.codimd.com
+
+; vim: ft=dosini

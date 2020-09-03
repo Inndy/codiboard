@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Codi Board</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.css" integrity="sha512-+AdxWMqfOdtwMuXK482e5OgHYzN06s97n3NTAeAdTlUvlIgCBx3SUKvMculJIedylDfVCaQFdD6HaojI4aeBUA==" crossorigin="anonymous" />
+  <script src="https://unpkg.com/timeago.js@4.0.2/dist/timeago.min.js" integrity="sha384-CWCoowVa8sxHgBSrrvIWaWRxJChVP1C1QfoRGxHKUQSOPSGhb+HWXYPO5/MYnRIT" crossorigin="anonymous"></script>
+  <style>
+    html, body {
+      background-color: #333;
+    }
+    .container {
+      padding: 1rem 0;
+    }
+    .col-tags {
+      max-width: 15%;
+    }
+    #show_col_tags {
+      display: none;
+    }
+    #show_col_tags:checked + [for=show_col_tags]::after {
+      content: ": Yes";
+    }
+    #show_col_tags:not(:checked) + [for=show_col_tags]::after {
+      content: ": No";
+    }
+    #show_col_tags:not(:checked) ~ table .col-tags {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="ui container">
+    <input class="ui" type="checkbox" id="show_col_tags">
+    <label for="show_col_tags" class="ui button">Show Tags</label>
+
+    <div class="ui pagination menu">
+      % if current_page > 0:
+        <a class="item" href="{{ get_url('recently-updated', page=current_page - 1) }}">&lt;</a>
+      % else:
+        <span class="item disabled">&lt;</span>
+      % end
+
+      % for i in range(page_count):
+        <a class="item {{ 'active' if current_page == i else '' }}" href="{{ get_url('recently-updated', page=i) }}">{{ i }}</a>
+      % end
+
+      % if current_page < page_count - 1:
+        <a class="item" href="{{ get_url('recently-updated', page=current_page + 1) }}">&gt;</a>
+      % else:
+        <span class="item disabled">&gt;</span>
+      % end
+    </div>
+
+    <table class="ui celled table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th class="col-tags">Tags</th>
+          <th>Owner</th>
+          <th>Last Changed</th>
+        </tr>
+      </thead>
+      <tbody>
+        % for note in notes:
+        <tr>
+          <td>
+            <a href="{{ config['codimd.url'] }}/{{ to_longid(note['id']) }}">{{ note['title'] }}</a>
+          </td>
+          <td class="col-tags">
+            % for tag in note['tags']:
+              <code class="ui label circular">{{ tag }}</code>
+            % end
+          </td>
+          <td>{{ note['owner'] }}</td>
+          <td>
+            <span class="time" datetime="{{ note['lastchangeAt'] or note['createdAt'] }}">{{ '{:%Y/%m/%d %H:%M:%S}'.format(note['lastchangeAt'] or note['createdAt']) }}</span>
+          </td>
+        </tr>
+        % end
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.querySelectorAll('.time').forEach(e => timeago.render(e))
+    show_col_tags.checked = localStorage['show_col_tags'] === 'true'
+    show_col_tags.onchange = function () {
+      localStorage['show_col_tags'] = this.checked
+    }
+  </script>
+</body>
+</html>

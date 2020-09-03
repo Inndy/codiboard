@@ -1,0 +1,11 @@
+[uwsgi]
+plugins = python3
+uid = yoru_user
+gid = www-data
+module = codiboard:app
+chdir = /you/path/to/codiboard
+master = true
+processes = 1
+threads = 4
+
+; vim: ft=dosini
