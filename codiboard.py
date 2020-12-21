@@ -23,7 +23,7 @@ if docker_network_name:
 
 db = psycopg2.connect(host=app.config['postgre.host'], dbname=app.config['postgre.db'], user=app.config['postgre.user'], password=app.config['postgre.password'])
 
-BaseTemplate.defaults['to_longid'] = lambda uuid: base64.b64encode(bytes.fromhex(uuid.replace('-', ''))).rstrip(b'=').decode('ascii')
+BaseTemplate.defaults['to_longid'] = lambda uuid: base64.b64encode(bytes.fromhex(uuid.replace('-', ''))).replace(b'+', b'-').replace(b'/', b'_').rstrip(b'=').decode('ascii')
 BaseTemplate.defaults['config'] = app.config
 BaseTemplate.defaults['get_url'] = app.get_url
 
