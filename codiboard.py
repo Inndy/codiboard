@@ -105,8 +105,13 @@ def recently_updated(page=0):
             ''', (per_page, page * per_page))
 
     notes = [
-        { 'tags': parse_note_tags(note['content']), **note }
+        { 'tags': list(parse_note_tags(note['content'])), **note }
         for note in cursor
+    ]
+
+    notes = [
+        note for note in notes
+        if 'private' not in note['tags']
     ]
 
     return {
