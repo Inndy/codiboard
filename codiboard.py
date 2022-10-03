@@ -58,7 +58,7 @@ def parse_note_tags(note):
 
 @app.get('/')
 def index():
-    return redirect(app.get_url('recently-updated'))
+    return redirect(app.get_url('/recently-updated'))
 
 @app.get('/recently-updated')
 @app.get('/recently-updated/<page:int>', name='recently-updated')
